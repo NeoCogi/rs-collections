@@ -36,23 +36,3 @@ pub mod hashmap;
 
 pub use vec::*;
 pub use hashmap::*;
-
-use ::core::alloc::*;
-use rs_mem::*;
-
-pub(crate) unsafe fn alloc_array<T>(count: usize) -> *mut T {
-    let l = Layout::array::<T>(count);
-    match l {
-        Ok(layout) => sysalloc.alloc(layout) as *mut T,
-        _ => panic!("unable to create layout")
-    }
-}
-
-// TODO: change this to slice once const generics stable
-pub(crate) unsafe fn free_array_ptr<T>(ptr: *mut T, count: usize) {
-    let l = Layout::array::<T>(count);
-    match l {
-        Ok(layout) => sysalloc.dealloc(ptr as *mut u8, layout),
-        _ => panic!("unable to create layout")
-    }
-}

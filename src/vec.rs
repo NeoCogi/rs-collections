@@ -29,7 +29,7 @@
 //
 
 use core::*;
-use crate::*;
+use rs_mem::*;
 
 
 #[repr(C)]
@@ -44,7 +44,7 @@ impl<T> Vec<T> {
         if c == 0 { Self::new() }
         else {
             Self {
-                elements: unsafe { crate::alloc_array(c) },
+                elements: unsafe { alloc_array(c) },
                 count   : 0,
                 capacity: c,
             }
@@ -67,7 +67,7 @@ impl<T> Vec<T> {
     pub fn push(&mut self, t: T) {
         if self.count >= self.capacity {
             let new_size    = if self.capacity == 0 { 16 } else { self.capacity * 2 };
-            let new_ptr     = unsafe { crate::alloc_array::<T>(new_size) };
+            let new_ptr     = unsafe { alloc_array::<T>(new_size) };
             let old_ptr     = self.elements;
 
             for i in 0..self.count {

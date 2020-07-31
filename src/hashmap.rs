@@ -102,7 +102,7 @@ impl<K: Hash + PartialEq, V> HashMap<K, V> {
 
     fn new_with_cap(cap: usize) -> Self {
         Self {
-            table   : Unique::new(unsafe { crate::alloc_array(cap) }),
+            table   : Unique::new(unsafe { alloc_array(cap) }),
             count   : 0,
             capacity: cap,
         }
@@ -120,7 +120,7 @@ impl<K: Hash + PartialEq, V> HashMap<K, V> {
             }
         }
 
-        unsafe { crate::free_array_ptr(self.table.get_mut_ptr(), self.capacity) };
+        unsafe { free_array_ptr(self.table.get_mut_ptr(), self.capacity) };
         self.count  = 0;
         self.capacity = 0;
 
@@ -230,7 +230,7 @@ impl<K : Hash + PartialEq, V> Drop for HashMap<K, V> {
                     unsafe { ptr::drop_in_place(&kv.value as *const V as *mut V) };
                 }
             }
-            unsafe { crate::free_array_ptr(self.table.get_mut_ptr(), self.capacity) }
+            unsafe { free_array_ptr(self.table.get_mut_ptr(), self.capacity) }
         }
     }
 }
