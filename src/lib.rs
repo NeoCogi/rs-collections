@@ -33,6 +33,8 @@
 pub mod hash;
 pub mod vec;
 pub mod hashmap;
+pub mod string;
 
 pub use vec::*;
 pub use hashmap::*;
+pub use string::*;
