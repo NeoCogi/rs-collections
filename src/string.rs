@@ -40,6 +40,44 @@ impl String {
             self.data.push(c);
         }
     }
+
+    pub fn len(&self) -> usize { self.data.len() }
+
+    pub fn split(&self, pattern: &str) -> Vec<String> {
+        let mut v = Vec::<String>::new();
+        let mut i = 0;
+        let ss = self.as_str();
+        let ss_len = ss.len();
+        let mut chars = ss.chars();
+        loop {
+            let mut st = String::new();
+            loop {
+                match chars.next() {
+                    Some(c) if pattern.contains(c) => {
+                        if st.as_str().len() > 0 {
+                            v.push(st);
+                        }
+                        i += 1;
+                        break
+                    },
+                    Some(c) => {
+                        st.push(c as u8);
+                        i += 1;
+                    },
+                    None => {
+                        if st.as_str().len() > 0 {
+                            v.push(st);
+                        }
+                        break
+                    }
+                }
+            }
+            if i >= ss_len {
+                break
+            }
+        }
+        v
+    }
 }
 
 pub trait Append<T> {
@@ -143,6 +181,24 @@ mod tests {
             let i : i32 = -12345;
             if String::from("-12345") != format!("{}", i) {
                 panic!("fail {}", i);
+            }
+        }
+    }
+
+    #[test]
+    fn test_split() {
+        let s = String::from("v 0/1/2 4/5/6");
+        let ss1 = s.split(" ");
+
+        assert_eq!(ss1[0].as_str(), "v");
+        assert_eq!(ss1[1].as_str(), "0/1/2");
+        assert_eq!(ss1[2].as_str(), "4/5/6");
+
+        let v = [ ["0", "1", "2"], ["4", "5", "6"] ];
+        for i in 1..3 {
+            let ss2 = ss1[i].split("/");
+            for j in 0..3 {
+                assert_eq!(ss2[j].as_str(), v[i - 1][j]);
             }
         }
     }
