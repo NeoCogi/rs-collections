@@ -33,6 +33,7 @@ impl String {
 
     pub fn into_bytes(self) -> Vec<u8> { self.data }
     pub fn as_bytes(&self) -> &[u8] { self.data.as_slice() }
+    pub fn as_bytes_mut(&mut self) -> &[u8] { self.data.as_mut_slice() }
     pub fn as_mut_vec(&mut self) -> &mut Vec<u8> { &mut self.data }
 
     pub fn push_str(&mut self, s: &str) {
