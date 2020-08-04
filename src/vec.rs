@@ -126,6 +126,46 @@ impl<T> Vec<T> {
     }
 
     pub fn capacity(&self) -> usize { self.capacity }
+
+    pub fn iter(&self) -> slice::Iter<T> {
+        self.as_slice().into_iter()
+    }
+
+    pub fn iter_mut(&mut self) -> slice::IterMut<T> {
+        self.as_mut_slice().into_iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a Vec<T> {
+    type Item = &'a T;
+    type IntoIter = slice::Iter<'a, T>;
+
+    fn into_iter(self) -> slice::Iter<'a, T> {
+        self.iter()
+    }
+}
+
+impl<'a, T> IntoIterator for &'a mut Vec<T> {
+    type Item = &'a mut T;
+    type IntoIter = slice::IterMut<'a, T>;
+
+    fn into_iter(self) -> slice::IterMut<'a, T> {
+        self.iter_mut()
+    }
+}
+
+impl<A> iter::FromIterator<A> for Vec<A> {
+    fn from_iter<I: IntoIterator<Item = A>>(iter: I) -> Self {
+        let mut v = Vec::new();
+        let mut it = iter.into_iter();
+        loop {
+            match it.next() {
+                Some(r) => v.push(r),
+                None => break,
+            }
+        }
+        v
+    }
 }
 
 pub trait VecAppend<E: Copy> {

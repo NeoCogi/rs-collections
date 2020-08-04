@@ -43,7 +43,7 @@ impl String {
 
     pub fn len(&self) -> usize { self.data.len() }
 
-    pub fn split(&self, pattern: &str) -> Vec<String> {
+    pub fn split(&self, pattern: &str) -> Split {
         let mut v = Vec::<String>::new();
         let mut i = 0;
         let ss = self.as_str();
@@ -76,7 +76,24 @@ impl String {
                 break
             }
         }
-        v
+        Split { v: v, idx: 0 }
+    }
+
+}
+
+pub struct Split {
+    v: Vec<String>,
+    idx: usize,
+}
+
+impl Iterator for Split  {
+    type Item = String;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx < self.v.len() {
+            self.idx += 1;
+            return Some(self.v[self.idx - 1].clone());
+        }
+        None
     }
 }
 
@@ -188,7 +205,7 @@ mod tests {
     #[test]
     fn test_split() {
         let s = String::from("v 0/1/2 4/5/6");
-        let ss1 = s.split(" ");
+        let ss1 : Vec<String> = s.split(" ").collect();
 
         assert_eq!(ss1[0].as_str(), "v");
         assert_eq!(ss1[1].as_str(), "0/1/2");
@@ -196,7 +213,7 @@ mod tests {
 
         let v = [ ["0", "1", "2"], ["4", "5", "6"] ];
         for i in 1..3 {
-            let ss2 = ss1[i].split("/");
+            let ss2 : Vec<String> = ss1[i].split("/").collect();
             for j in 0..3 {
                 assert_eq!(ss2[j].as_str(), v[i - 1][j]);
             }
