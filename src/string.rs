@@ -83,6 +83,10 @@ impl String {
     pub fn lines(&self) -> Lines {
         Lines(self.split("\n"))
     }
+
+    pub fn from_raw_parts(ptr: *mut u8, len: usize, cap: usize) -> Self {
+        Self { data : Vec::from_raw_parts(ptr, len, cap) }
+    }
 }
 
 pub struct Split {

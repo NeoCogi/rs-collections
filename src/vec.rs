@@ -139,6 +139,10 @@ impl<T> Vec<T> {
     pub fn iter_mut(&mut self) -> slice::IterMut<T> {
         self.as_mut_slice().into_iter()
     }
+
+    pub fn from_raw_parts(ptr: *mut T, len: usize, cap: usize) -> Self {
+        Self { elements: ptr, count: len, capacity: cap }
+    }
 }
 
 impl<'a, T> IntoIterator for &'a Vec<T> {
