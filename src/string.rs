@@ -79,6 +79,9 @@ impl String {
         Split { v: v, idx: 0 }
     }
 
+    pub fn lines(&self) -> Lines {
+        Lines(self.split("\n"))
+    }
 }
 
 pub struct Split {
@@ -95,6 +98,12 @@ impl Iterator for Split  {
         }
         None
     }
+}
+
+pub struct Lines(Split);
+impl Iterator for Lines {
+    type Item = String;
+    fn next(&mut self) -> Option<Self::Item> { self.0.next() }
 }
 
 pub trait Append<T> {
@@ -219,4 +228,14 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_lines() {
+        let s = String::from("hello world\nsomething is different\n\n");
+        let ss1 : Vec<String> = s.lines().collect();
+        assert_eq!(ss1.len(), 2);
+        assert_eq!(ss1[0].as_str(), "hello world");
+        assert_eq!(ss1[1].as_str(), "something is different");
+    }
+
 }
