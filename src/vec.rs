@@ -29,6 +29,8 @@
 //
 
 use core::*;
+use core::ops::*;
+use core::slice::*;
 use rs_mem::*;
 
 
@@ -59,7 +61,10 @@ impl<T> Vec<T> {
         }
     }
 
+    #[inline]
     pub fn as_slice(&self) -> &[T] { unsafe { core::slice::from_raw_parts(self.elements, self.count) } }
+
+    #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [T] { unsafe { core::slice::from_raw_parts_mut(self.elements, self.count) } }
 
     pub fn len(&self) -> usize { self.count }
@@ -181,15 +186,20 @@ impl<T : Copy> VecAppend<T> for Vec<T> {
     }
 }
 
-impl<T> core::ops::Index<usize> for Vec<T> {
-    type Output = T;
+impl<T, I: SliceIndex<[T]>> Index<I> for Vec<T> {
+    type Output = I::Output;
+
     #[inline]
-    fn index(&self, idx: usize) -> &Self::Output { self.get_unchecked(idx) }
+    fn index(&self, index: I) -> &Self::Output {
+        Index::index(self.as_slice(), index)
+    }
 }
 
-impl<T> core::ops::IndexMut<usize> for Vec<T> {
+impl<T, I: SliceIndex<[T]>> IndexMut<I> for Vec<T> {
     #[inline]
-    fn index_mut(&mut self, idx: usize) -> &mut Self::Output { self.get_unchecked_mut(idx) }
+    fn index_mut(&mut self, index: I) -> &mut Self::Output {
+        IndexMut::index_mut(self.as_mut_slice(), index)
+    }
 }
 
 impl<T> Drop for Vec<T> {
